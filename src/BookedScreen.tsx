@@ -1,11 +1,9 @@
 import React from "react";
-import { View, StyleSheet } from "react-native";
-import { FlatList } from "react-native-gesture-handler";
-import { Post } from "./components/Post";
 import { DATA } from "./data";
 import { IPost } from "./../types/post";
 import { HeaderButtons, Item } from "react-navigation-header-buttons";
 import { AppHeaderIcon } from "./components/AppHeaderIcon";
+import { PostList } from "./components/PostList";
 
 export const BookedScreen = ({ navigation }: { navigation: any }) => {
   const openPostHandler = (post: IPost) => {
@@ -17,19 +15,14 @@ export const BookedScreen = ({ navigation }: { navigation: any }) => {
   };
 
   return (
-    <View style={styles.center}>
-      <FlatList
-        data={DATA.filter((post) => post.booked)}
-        keyExtractor={(post) => post.id}
-        renderItem={({ item }) => {
-          return <Post post={item} onOpen={openPostHandler} />;
-        }}
-      />
-    </View>
+    <PostList
+      data={DATA.filter((post) => post.booked)}
+      onOpen={openPostHandler}
+    />
   );
 };
 
-BookedScreen.navigationOptions = () => {
+BookedScreen.navigationOptions = ({ navigation }: { navigation: any }) => {
   return {
     headerTitle: "Избранное",
     headerLeft: () => (
@@ -37,17 +30,9 @@ BookedScreen.navigationOptions = () => {
         <Item
           title="Drower"
           iconName="ios-menu"
-          onPress={() => console.log("Press drower")}
+          onPress={() => navigation.toggleDrawer()}
         />
       </HeaderButtons>
     ),
   };
 };
-
-const styles = StyleSheet.create({
-  center: {
-    flex: 1,
-    paddingVertical: 10,
-    paddingHorizontal: 10,
-  },
-});

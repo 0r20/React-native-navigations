@@ -8,23 +8,27 @@ import { PostScreen } from "../PostScreen";
 import { THEME } from "../theme";
 import React from "react";
 import { BookedScreen } from "../BookedScreen";
+import { createMaterialBottomTabNavigator } from "react-navigation-material-bottom-tabs";
+import { createDrawerNavigator } from "react-navigation-drawer";
+import { AboutScreen } from "../AboutScreen";
+import { CreateScreen } from "../CreateScreen";
+
+const navigatorOption = {
+  initialRouteKey: "Main",
+  defaultNavigationOptions: {
+    headerStyle: {
+      backgroundColor: Platform.OS === "android" ? THEME.MAIN_COLOR : "#fff",
+    },
+    headerTintColor: Platform.OS === "android" ? "#fff" : THEME.MAIN_COLOR,
+  },
+};
 
 const PostNavigator = createStackNavigator(
   {
     Main: MainScreen,
-    Post: {
-      screen: PostScreen,
-    },
+    Post: PostScreen,
   },
-  {
-    initialRouteKey: "Main",
-    defaultNavigationOptions: {
-      headerStyle: {
-        backgroundColor: Platform.OS === "android" ? THEME.MAIN_COLOR : "#fff",
-      },
-      headerTintColor: Platform.OS === "android" ? "#fff" : THEME.MAIN_COLOR,
-    },
-  }
+  navigatorOption
 );
 
 const BookedNavigator = createStackNavigator(
@@ -32,41 +36,87 @@ const BookedNavigator = createStackNavigator(
     Booked: BookedScreen,
     Post: PostScreen,
   },
-  {
-    initialRouteKey: "Booked",
-    defaultNavigationOptions: {
-      headerStyle: {
-        backgroundColor: Platform.OS === "android" ? THEME.MAIN_COLOR : "#fff",
-      },
-      headerTintColor: Platform.OS === "android" ? "#fff" : THEME.MAIN_COLOR,
-    },
-  }
+  navigatorOption
 );
 
-const BottomNavigator = createBottomTabNavigator(
+const bottomTabsConfig = {
+  Post: {
+    screen: PostNavigator,
+    navigationOptions: {
+      tabBarLabel: "Все",
+      tabBarIcon: (info: any) => (
+        <Ionicons name="ios-albums" size={25} color={info.tintColor} />
+      ),
+    },
+  },
+  Booked: {
+    screen: BookedNavigator,
+    navigationOptions: {
+      tabBarLabel: "Избранное",
+      tabBarIcon: (info: any) => (
+        <Ionicons name="ios-star" size={25} color={info.tintColor} />
+      ),
+    },
+  },
+};
+
+const BottomNavigator =
+  Platform.OS === "android"
+    ? createMaterialBottomTabNavigator(bottomTabsConfig, {
+        activeColor: "#fff",
+        shifting: true,
+        barStyle: {
+          backgroundColor: THEME.MAIN_COLOR,
+        },
+      })
+    : createBottomTabNavigator(bottomTabsConfig, {
+        tabBarOptions: {
+          activeTintColor: THEME.MAIN_COLOR,
+        },
+      });
+
+const CreateNavigator = createStackNavigator(
   {
-    Post: {
-      screen: PostNavigator,
+    Create: CreateScreen,
+  },
+  navigatorOption
+);
+const AboutNavigator = createStackNavigator(
+  {
+    About: AboutScreen,
+  },
+  navigatorOption
+);
+
+const MainNavigator = createDrawerNavigator(
+  {
+    PostTabs: {
+      screen: BottomNavigator,
       navigationOptions: {
-        tabBarIcon: (info) => (
-          <Ionicons name="ios-albums" size={25} color={info.tintColor} />
-        ),
+        drawerLabel: "Главная",
       },
     },
-    Booked: {
-      screen: BookedNavigator,
+    About: {
+      screen: AboutNavigator,
       navigationOptions: {
-        tabBarIcon: (info) => (
-          <Ionicons name="ios-star" size={25} color={info.tintColor} />
-        ),
+        drawerLabel: "О приложении",
+      },
+    },
+    Create: {
+      screen: CreateNavigator,
+      navigationOptions: {
+        drawerLabel: "Новый пост",
       },
     },
   },
   {
-    tabBarOptions: {
+    contentOptions: {
       activeTintColor: THEME.MAIN_COLOR,
+      labelStyle: {
+        fontFamily: "ubuntu-bold",
+      },
     },
   }
 );
 
-export const AppNavigation = createAppContainer(BottomNavigator);
+export const AppNavigation = createAppContainer(MainNavigator);
