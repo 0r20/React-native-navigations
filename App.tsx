@@ -1,21 +1,28 @@
-import { StatusBar } from 'expo-status-bar';
-import React from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import "react-native-gesture-handler";
+import React, { useState } from "react";
+import { AppLoading } from "expo";
+import * as Font from "expo-font";
+import { AppNavigation } from "./src/navigations/AppNavigations";
 
-export default function App() {
-  return (
-    <View style={styles.container}>
-      <Text>Open up App.tsx to start working on your app!</Text>
-      <StatusBar style="auto" />
-    </View>
-  );
+async function loadApplication() {
+  await Font.loadAsync({
+    "ubuntu-regular": require("./assets/fonts/Ubuntu-Regular.ttf"),
+    "ubuntu-bold": require("./assets/fonts/Ubuntu-Bold.ttf"),
+  });
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
+export default function App() {
+  const [isReady, setIsReady] = useState(false);
+
+  if (!isReady) {
+    return (
+      <AppLoading
+        startAsync={loadApplication}
+        onError={(err) => console.log("Ошибка загрузки приложения: ", err)}
+        onFinish={() => setIsReady(true)}
+      />
+    );
+  }
+
+  return <AppNavigation />;
+}
