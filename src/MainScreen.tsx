@@ -1,25 +1,36 @@
 import React from "react";
 import { Text, View, StyleSheet, Button } from "react-native";
+import { FlatList } from "react-native-gesture-handler";
+import { Post } from "./components/Post";
+import { DATA } from "./data";
+import { IPost } from "./types/post";
 
-export const MainScreen = ({ navigation }) => {
-  const goToPost = () => {
-    navigation.navigate("Post");
+export const MainScreen = ({ navigation }: { navigation: any }) => {
+  const openPostHandler = (post: IPost) => {
+    navigation.navigate("Post", { postId: post.id, date: post.date });
   };
 
   return (
     <View style={styles.center}>
-      <Text>MainScreen</Text>
-      <Button title="Перейти к посту" onPress={goToPost} />
+      <FlatList
+        data={DATA}
+        keyExtractor={(post) => post.id}
+        renderItem={({ item }) => {
+          return <Post post={item} onOpen={openPostHandler} />;
+        }}
+      />
     </View>
   );
 };
 
-MainScreen.navigationOptions = { headerTitle: "Мой блог" };
+MainScreen.navigationOptions = () => {
+  return { headerTitle: "Мой блог" };
+};
 
 const styles = StyleSheet.create({
   center: {
     flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
+    paddingVertical: 10,
+    paddingHorizontal: 10,
   },
 });
