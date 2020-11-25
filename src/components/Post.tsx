@@ -1,7 +1,7 @@
 import React from "react";
 import { View, StyleSheet, ImageBackground, Text } from "react-native";
 import { TouchableOpacity } from "react-native-gesture-handler";
-import { IPost } from "../types/post";
+import { IPost } from "./../../types/post";
 
 export const Post = ({
   post,

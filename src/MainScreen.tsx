@@ -1,13 +1,19 @@
 import React from "react";
-import { Text, View, StyleSheet, Button } from "react-native";
+import { View, StyleSheet } from "react-native";
 import { FlatList } from "react-native-gesture-handler";
 import { Post } from "./components/Post";
 import { DATA } from "./data";
-import { IPost } from "./types/post";
+import { IPost } from "./../types/post";
+import { HeaderButtons, Item } from "react-navigation-header-buttons";
+import { AppHeaderIcon } from "./components/AppHeaderIcon";
 
 export const MainScreen = ({ navigation }: { navigation: any }) => {
   const openPostHandler = (post: IPost) => {
-    navigation.navigate("Post", { postId: post.id, date: post.date });
+    navigation.navigate("Post", {
+      postId: post.id,
+      date: post.date,
+      booked: post.booked,
+    });
   };
 
   return (
@@ -24,7 +30,27 @@ export const MainScreen = ({ navigation }: { navigation: any }) => {
 };
 
 MainScreen.navigationOptions = () => {
-  return { headerTitle: "Мой блог" };
+  return {
+    headerTitle: "Мой блог",
+    headerRight: () => (
+      <HeaderButtons HeaderButtonComponent={AppHeaderIcon}>
+        <Item
+          title="Take photo"
+          iconName="ios-camera"
+          onPress={() => console.log("Press photo")}
+        />
+      </HeaderButtons>
+    ),
+    headerLeft: () => (
+      <HeaderButtons HeaderButtonComponent={AppHeaderIcon}>
+        <Item
+          title="Drower"
+          iconName="ios-menu"
+          onPress={() => console.log("Press drower")}
+        />
+      </HeaderButtons>
+    ),
+  };
 };
 
 const styles = StyleSheet.create({
